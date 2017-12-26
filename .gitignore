@@ -1,0 +1,5 @@
+*.zip
+tests/docker/docker.env
+tests/venv
+tests/roles/*
+!tests/roles/test
