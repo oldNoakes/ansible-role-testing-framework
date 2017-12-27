@@ -1,0 +1,12 @@
+---
+- hosts: all
+  connection: ssh
+  become: yes
+  become_user: root
+  remote_user: vagrant
+  gather_facts: yes
+  vars:
+    example_key: example_value
+  roles:
+    - a
+    - spec
