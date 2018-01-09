@@ -19,13 +19,18 @@ usage:
 
 verify:
 	@which virtualenv >/dev/null || (printf "${RED}Please install virtualenv${NC}\n" && exit 1)
-	@which docker >/dev/null || (printf "${RED}Please install docker${NC}\n" && exit 1)
 	@which pip >/dev/null || (printf "${RED}Please install pip${NC}\n" && exit 1)
+
+docker_verify:
+	@which docker >/dev/null || (printf "${RED}Please install docker${NC}\n" && exit 1)
+
+vagrant_verify:
+	@which vagrant >/dev/null || (printf "${RED}Please install vagrant${NC}\n" && exit 1)
 
 clean:
 	@find . -name '*.retry' -exec rm -f {} +
 
-docker_clean: clean verify
+docker_clean: clean verify docker_verify
 ifneq ($(running_docker),)
 	@printf "Killing the running docker container: ${role_name}\n"
 	@docker kill ${role_name}
@@ -57,13 +62,13 @@ debug: docker_clean configure docker_env docker_sshkey
 	source tests/venv/bin/activate && ./tests/docker/ansible.sh; docker exec -it ${role_name} /bin/bash
 
 
-vagrant_up: clean verify configure
+vagrant_up: clean verify vagrant_verify configure
 	source tests/venv/bin/activate && vagrant up
 
-vagrant_provision: clean verify configure
+vagrant_provision: clean verify vagrant_verify configure
 	source tests/venv/bin/activate && vagrant provision
 
-vagrant_destroy:
+vagrant_destroy: vagrant_verify
 	vagrant destroy -f
 
 .PHONY: test
