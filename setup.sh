@@ -12,7 +12,7 @@ echo "    Copy the contents of your 'roles' in your tests/test.yml file into bot
 echo "    Remove all files in your 'tests' root dir EXCEPT pip-requirements.txt, pip.conf, setup_ansible.sh and requirements.yml"
 
 # update .gitignore
-for path in docker_return_code docker.env tests/docker/docker.env tests/.Python tests/venv tests/bin tests/include tests/lib setup.sh test.yml.sample;
+for path in docker_return_code tests/docker/docker.env tests/venv setup.sh test.yml.sample;
 do
   grep "${path}" .gitignore
   if [ $? -ne 0 ]

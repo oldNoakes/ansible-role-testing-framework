@@ -14,10 +14,9 @@ end
 # Which will forward the ports on Vagrantbox 8080/8081 to local box 11080/11081
 forwarded_ports = []
 
-test_role = "ANSIBLE_ROLE_CHANGE_THIS"
 Vagrant.configure("2") do |config|
 
-  name = "#{test_role}-centos7"
+  name = "ANSIBLE_ROLE_CHANGE_THIS"
   ram =  ENV['ANSIBLE_ROLE_RAM'] || '1536'
   config.vm.define name do |conf|
     config.vm.box = "centos/7"
