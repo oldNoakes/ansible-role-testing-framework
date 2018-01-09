@@ -2,9 +2,12 @@
 
 which gsed 1>/dev/null || { echo "Please install gsed via homebrew since osx sed sucks"; exit 1; }
 
-echo "Please provide the role name: "
+DEFAULT_ROLE=$(basename $PWD)
+printf "Please provide the role name (Default: ${DEFAULT_ROLE}): "
 read ROLE
+ROLE=${ROLE:-$DEFAULT_ROLE}
 echo "Replacing ANSIBLE_ROLE_CHANGE_THIS with $ROLE in all files"
+exit 1
 find . -type f ! -name setup.sh -exec gsed -i -e 's/ANSIBLE_ROLE_CHANGE_THIS/'"$ROLE"'/g' {} \;
 
 echo "Cleanup time:"
