@@ -13,6 +13,9 @@ running_docker := $(shell docker ps -q -f name=${role_name})
 usage:
 	@printf "${YELLOW}make test                 ${GREEN}# Test using docker. ${NC}\n"
 	@printf "${YELLOW}make debug                ${GREEN}# Test using docker and returns to bash on the container. ${NC}\n"
+	@printf "${YELLOW}make vagrant_up           ${GREEN}# Test using vagrant up. ${NC}\n"
+	@printf "${YELLOW}make vagrant_provision    ${GREEN}# Test using vagrant provision. ${NC}\n"
+	@printf "${YELLOW}make vagrant_destroy      ${GREEN}# Destroy the vagrant box. ${NC}\n"
 
 verify:
 	@which virtualenv >/dev/null || (printf "${RED}Please install virtualenv${NC}\n" && exit 1)
@@ -52,5 +55,15 @@ test: docker_clean configure docker_env docker_sshkey
 
 debug: docker_clean configure docker_env docker_sshkey
 	source tests/venv/bin/activate && ./tests/docker/ansible.sh; docker exec -it ${role_name} /bin/bash
+
+
+vagrant_up: clean verify configure
+	source tests/venv/bin/activate && vagrant up
+
+vagrant_provision: clean verify configure
+	source tests/venv/bin/activate && vagrant provision
+
+vagrant_destroy:
+	vagrant destroy -f
 
 .PHONY: test
