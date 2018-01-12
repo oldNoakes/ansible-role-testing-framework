@@ -7,8 +7,8 @@ NC     := \033[0m # No Color
 
 DOCKERIMG := oldnoakes/infratest-centos
 makefile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-role_name := $(notdir $(patsubst %/,%,$(dir $(makefile_path))))
-running_docker := $(shell docker ps -q -f name=${role_name})
+container_name := $(notdir $(patsubst %/,%,$(dir $(makefile_path))))
+running_docker := $(shell docker ps -q -f name=${container_name})
 
 usage:
 	@printf "${YELLOW}make test                 ${GREEN}# Test using docker. ${NC}\n"
@@ -32,8 +32,8 @@ clean:
 
 docker_clean: clean verify docker_verify
 ifneq ($(running_docker),)
-	@printf "Killing the running docker container: ${role_name}\n"
-	@docker kill ${role_name}
+	@printf "Killing the running docker container: ${container_name}\n"
+	@docker kill ${container_name}
 endif
 	@rm -rf /var/tmp/docker_ssh && mkdir -p /var/tmp/docker_ssh
 	@rm -f docker_return_code
@@ -46,21 +46,20 @@ docker_env:
 
 docker_sshkey: docker_run
 	@ssh-keygen -b 2048 -t rsa -f /var/tmp/docker_ssh/id_rsa -q -N ""
-	@docker cp /var/tmp/docker_ssh/id_rsa.pub ${role_name}:/home/vagrant/.ssh/authorized_keys
-	@docker exec ${role_name} /bin/bash -c 'chown vagrant:vagrant /home/vagrant/.ssh/authorized_keys'
+	@docker cp /var/tmp/docker_ssh/id_rsa.pub ${container_name}:/home/vagrant/.ssh/authorized_keys
+	@docker exec ${container_name} /bin/bash -c 'chown vagrant:vagrant /home/vagrant/.ssh/authorized_keys'
 
 docker_run: docker_env
 	docker pull ${DOCKERIMG}:latest
-	docker run -P --name ${role_name} -d --cap-add=SYS_ADMIN --cap-add=NET_ADMIN -v /sys/fs/cgroup:/sys/fs/cgroup:ro --rm --hostname ${role_name} -e "container=docker" --env-file ./tests/docker/docker.env ${DOCKERIMG}:latest
+	docker run -P --name ${container_name} -d --cap-add=SYS_ADMIN --cap-add=NET_ADMIN -v /sys/fs/cgroup:/sys/fs/cgroup:ro --rm --hostname ${container_name} -e "container=docker" --env-file ./tests/docker/docker.env ${DOCKERIMG}:latest
 
 test: docker_clean configure docker_env docker_sshkey
 	source tests/venv/bin/activate && ./tests/docker/ansible.sh; echo $$? > docker_return_code
-	@docker kill ${role_name}
+	@docker kill ${container_name}
 	@exit $$(cat docker_return_code)
 
 debug: docker_clean configure docker_env docker_sshkey
-	source tests/venv/bin/activate && ./tests/docker/ansible.sh; docker exec -it ${role_name} /bin/bash
-
+	source tests/venv/bin/activate && ./tests/docker/ansible.sh; docker exec -it ${container_name} /bin/bash
 
 vagrant_up: clean verify vagrant_verify configure
 	source tests/venv/bin/activate && vagrant up
