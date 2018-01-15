@@ -70,4 +70,7 @@ vagrant_provision: clean verify vagrant_verify configure
 vagrant_destroy: vagrant_verify
 	vagrant destroy -f
 
+update_test_framework:
+	@./.artfw/update.sh
+
 .PHONY: test
