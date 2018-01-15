@@ -2,6 +2,7 @@
 
 cd `dirname $0` # cd to directory of this script
 START_DIR="$(pwd)" # Get full path for volume mount
+ROLE_NAME_FILE="${START_DIR}/.role_name"
 
 export PATH=${START_DIR}/venv/bin:${PATH}
 export PIP_CONFIG_FILE=${START_DIR}/pip.conf
@@ -19,15 +20,29 @@ function run_ansible_galaxy() {
 }
 
 function symlink_self() {
-  ROLE_NAME="$(basename $(dirname "$START_DIR"))"
+  ROLE_DIRECTORY="$(basename $(dirname "$START_DIR"))"
+  ROLE_NAME="$(cat ${ROLE_NAME_FILE})"
   mkdir -p ${START_DIR}/roles
   rm -f ${START_DIR}/roles/${ROLE_NAME}
   cd ${START_DIR}
-  ln -fs ./../../../${ROLE_NAME} ./roles/${ROLE_NAME}
+  ln -fs ./../../../${ROLE_DIRECTORY} ./roles/${ROLE_NAME}
   cd -
 }
 
+function get_role_name() {
+  if [ ! -f ${ROLE_NAME_FILE} ]
+  then
+    CLONE_DIR_NAME="$(basename $(dirname "$START_DIR"))"
+    ROLE_NAME="$(echo $CLONE_DIR_NAME | sed 's/ansible-role-//g' )"
+    printf "Please provide the name of this role (Default: ${ROLE_NAME}): "
+    read ROLE
+    ROLE=${ROLE:-$ROLE_NAME}
+    printf $ROLE > ${ROLE_NAME_FILE}
+  fi
+}
+
 echo "*************** Setting up Ansible ****************"
+get_role_name
 init_virtualenv
 run_ansible_galaxy
 symlink_self

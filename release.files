@@ -1,0 +1,11 @@
+Makefile
+Vagrantfile
+tests/ansible.cfg
+tests/docker/ansible.sh
+tests/docker/setup_docker_env.sh
+tests/inventory/docker.sh
+tests/inventory/vagrant.sh
+tests/pip-requirements.txt
+tests/pip.conf
+tests/setup_ansible.sh
+tests/test.yml.sample

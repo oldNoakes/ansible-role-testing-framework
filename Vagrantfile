@@ -13,8 +13,11 @@ end
 #    forwarded_ports = [{ guest: 8080, host: 11080 }, { guest: 8081, host: 11081}]
 # Which will forward the ports on Vagrantbox 8080/8081 to local box 11080/11081
 forwarded_ports = []
-name = "ANSIBLE_ROLE_CHANGE_THIS"
+
+name = File.basename(Dir.pwd)
 ram = ENV['ANSIBLE_ROLE_RAM'] || '1536'
+# Must be specified as an environment value as is not a provisioner option
+ENV['ANSIBLE_ROLES_PATH'] = File.join(Dir.pwd, "tests", "roles")
 
 Vagrant.configure("2") do |config|
   config.vm.define name do |conf|
@@ -38,7 +41,7 @@ Vagrant.configure("2") do |config|
       ansible.playbook = "tests/test.yml"
       ansible.inventory_path = "tests/inventory/vagrant.sh"
       ansible.limit = "all"
-      ansible.config_file = "ansible.cfg"
+      ansible.config_file = "tests/ansible.cfg"
     end
   end
 end
