@@ -54,9 +54,9 @@ docker_run: docker_env
 	docker run -P --name ${container_name} -d --cap-add=SYS_ADMIN --cap-add=NET_ADMIN -v /sys/fs/cgroup:/sys/fs/cgroup:ro --rm --hostname ${container_name} -e "container=docker" --env-file ./tests/docker/docker.env ${DOCKERIMG}:latest
 
 test: docker_clean configure docker_env docker_sshkey
-	source tests/venv/bin/activate && ./tests/docker/ansible.sh; echo $$? > docker_return_code
+	source tests/venv/bin/activate && ./tests/docker/ansible.sh; echo $$? > ./tests/docker/docker.rc
 	@docker kill ${container_name}
-	@exit $$(cat docker_return_code)
+	@exit $$(cat ./tests/docker/docker.rc)
 
 debug: docker_clean configure docker_env docker_sshkey
 	source tests/venv/bin/activate && ./tests/docker/ansible.sh; docker exec -it ${container_name} /bin/bash
