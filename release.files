@@ -1,5 +1,7 @@
 Makefile
 Vagrantfile
+.artfw/configure.sh
+.artfw/update.sh
 tests/ansible.cfg
 tests/docker/ansible.sh
 tests/docker/setup_docker_env.sh
