@@ -12,7 +12,7 @@ function git_ignore() {
     fi
 }
 
-for path in tests/docker/docker.rc tests/docker/docker.env tests/venv tests/test.yml.sample 'tests/roles/*' '!tests/roles/spec';
+for path in '.artfw/downloads/*' tests/docker/docker.rc tests/docker/docker.env tests/venv tests/test.yml.sample 'tests/roles/*' '!tests/roles/spec';
 do
   git_ignore "${path}"
 done
