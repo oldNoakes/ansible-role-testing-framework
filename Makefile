@@ -11,11 +11,12 @@ container_name := $(notdir $(patsubst %/,%,$(dir $(makefile_path))))
 running_docker := $(shell docker ps -q -f name=${container_name})
 
 usage:
-	@printf "${YELLOW}make test                 ${GREEN}# Test using docker. ${NC}\n"
-	@printf "${YELLOW}make debug                ${GREEN}# Test using docker and returns to bash on the container. ${NC}\n"
-	@printf "${YELLOW}make vagrant_up           ${GREEN}# Test using vagrant up. ${NC}\n"
-	@printf "${YELLOW}make vagrant_provision    ${GREEN}# Test using vagrant provision. ${NC}\n"
-	@printf "${YELLOW}make vagrant_destroy      ${GREEN}# Destroy the vagrant box. ${NC}\n"
+	@printf "${YELLOW}make test                       ${GREEN}# Test using docker. ${NC}\n"
+	@printf "${YELLOW}make debug                      ${GREEN}# Test using docker and returns to bash on the container. ${NC}\n"
+	@printf "${YELLOW}make vagrant_up                 ${GREEN}# Test using vagrant up. ${NC}\n"
+	@printf "${YELLOW}make vagrant_provision          ${GREEN}# Test using vagrant provision. ${NC}\n"
+	@printf "${YELLOW}make vagrant_destroy            ${GREEN}# Destroy the vagrant box. ${NC}\n"
+	@printf "${YELLOW}make update_test_framework      ${GREEN}# Update to latest role testing framework release. ${NC}\n"	
 
 verify:
 	@which virtualenv >/dev/null || (printf "${RED}Please install virtualenv${NC}\n" && exit 1)
